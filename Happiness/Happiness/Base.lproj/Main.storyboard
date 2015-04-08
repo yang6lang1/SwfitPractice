@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="bDs-3l-yuo">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+    </dependencies>
+    <scenes>
+        <!--Happiness View Controller-->
+        <scene sceneID="2ju-sT-IM5">
+            <objects>
+                <viewController id="bDs-3l-yuo" customClass="HappinessViewController" customModule="Happiness" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="5S6-It-aP3"/>
+                        <viewControllerLayoutGuide type="bottom" id="6Ov-fT-dNW"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="shk-TZ-bBt">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="oYB-VE-hNj" customClass="FaceView" customModule="Happiness" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                        <color key="value" red="1" green="0.19638674803331535" blue="0.14861277662198902" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="2me-q7-qAk" appends="YES" id="MH3-ed-AKk"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="oYB-VE-hNj" firstAttribute="leading" secondItem="shk-TZ-bBt" secondAttribute="leading" id="BKY-VN-iLd"/>
+                            <constraint firstAttribute="trailing" secondItem="oYB-VE-hNj" secondAttribute="trailing" id="Enp-GD-na0"/>
+                            <constraint firstItem="oYB-VE-hNj" firstAttribute="top" secondItem="shk-TZ-bBt" secondAttribute="top" id="ap8-yF-0jn"/>
+                            <constraint firstItem="oYB-VE-hNj" firstAttribute="bottom" secondItem="6Ov-fT-dNW" secondAttribute="top" id="b7k-gh-d2e"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="faceView" destination="oYB-VE-hNj" id="8jC-5e-LPV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="e9O-vx-BAf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="2me-q7-qAk">
+                    <connections>
+                        <action selector="changeHappiness:" destination="bDs-3l-yuo" id="rHO-tF-zqI"/>
+                    </connections>
+                </panGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="319" y="264"/>
+        </scene>
+    </scenes>
+</document>

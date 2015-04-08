@@ -1,0 +1,382 @@
+An optional is just an enum
+enum Optional<T>{
+  case none
+  case Some(T)
+}
+
+Array:
+var a = [String]()
+var a = Array<String>()
+let a = ["a", "b","c", "d"]
+a.append("e")
+for element in a {
+  println("\(element)")
+}
+
+Dictionary:
+var d = Dictionary<String, Int>()
+var d = [String : Int]()
+d = ["a": 1, "b" : 2]
+let ranking = d["a"] // ranking might have nil value
+
+//using tuple to iterate
+for (key, value) in  d {
+  println("key: \(key), value: \(value)")
+}
+
+Range:
+A Range in swift is just two end points of sensible type (not gonna explain now)
+struct Range<T> {
+  var startIndex: T
+  var endIndex: T
+}
+let array = ["a", "b", "c","d"]
+let subArray = array[2...3]
+let subArray = array[2..<3]
+for i in [27...103] {
+  println(i)
+}
+
+NSObject
+Base class for object-c class
+
+NSNumber
+Generic number holding class
+let n = NSNumber(35.5)
+let i = n.intValue
+
+NSDate
+Used to find out the date and time
+
+Data structure in Swift
+class, struct, enum
+enum property cannot store any value
+Difference:
+Inheritance (class only)
+Introspection, casting (class only)
+value type(enum, struct) and enum type (class)
+
+Value(struct and enum)
+copied when passed as an argument to a function
+copied when assigned to a different variable
+immutable if assigned to a variable with let
+must note any func that can mutate a struct/enum with keyword mutating
+
+Reference(class)
+stored in the heap and reference counted (automatically)
+constant pointers to a class (with let) still can mutate by calling methods and changing properties
+
+Methods:
+to override a method, use keyword override
+final methods cannot be overrided
+Declare a type method or property with a static prefix
+
+Property
+Property observers
+you can observe changes to a property with a willSet and didSet method
+var someVar : Int = 42{
+  willSet{
+    //newValue is the new value
+  }
+  didSet{
+    //oldValue is the old value
+  }
+}
+
+Lazy initialization
+A lazy property does not get initialzed until someone accesses it
+
+Type casting
+keyword: as
+let a = AnyObject as UILabel
+
+To protect against a crash, we can use if let with as?
+if let a = AnyObject as? UILabel
+or
+if AnyObject is UILable{
+}
+
+Arrays
+for element in a as [UILabel]{
+}
+Concatenate:
++=[T]
+first -> T?
+last -> T?
+append(T)
+insert(T, atIndex: Int)
+splice(Array<T>, atIndex: Int)//eg: a.splice([d,e],atIndex:1)
+removeAtIndex(Int)
+removeRange(Range)
+replaceRange(Range, [T])
+sort(isOrderedBefore:(T,T) ->Bool)// eg: a.sort{$0 < $1}
+filter(includeElement: (T) -> Bool) ->[T]
+map(transform: (T) -> U) -> [T]
+//reduce the entire array to a single value
+reduce(initial: U, combine: (U, T) -> U) ->U
+//eg: let sum = [1,2,3].reduce(0){$0 +$1}
+
+String
+String.Index
+advance(String.Index, Int)
+//eg:
+var s = "hello"
+let index = advance(s.startIndex, 2)
+s.splice("abc", index)
+let startIndex = advance(s.startIndex, 1)
+let endIndex = advance(s.startIndex, 3)
+let subString = s[startIndex..<endIndex]
+//rangeOfString
+let num = "326.25"
+if let decimalRange = num.rangeOfString("."){
+  let wholeNumberPart = num[num.startIndex..<decimalRange.startIndex]//236
+}
+num.removeRange([num.startIndex..<decimalRange.startIndex])
+
+Number type conversion
+let a : Double = 32.25
+let b : Float = 25.23
+let c = Int(a) //32
+let d = Double(c) // 32.00
+let cgf = CGFloat(a)
+
+let a = Array("abc") // a = ["a","b","c"]
+let s = String(a) //s = "abc"
+
+Debugging:
+assertion
+//eg:
+assert(validation()!=nil, "the validation function returned nil")
+
+NSUserDefaults
+Tiny database
+let defaults = NSUserDefaults.standardUserDefaults()
+let plist = defaults.objectForKey(String)
+defaults.setObject(AnyObject, forKey:String)
+if !default.synchronize(){
+  //if it fails, there's not much you can do...
+}
+
+UIView
+UIView Initializer
+init(frame: CGRect) //initialize if UIView is from code
+init(coder: CGCoder) //initialize if UIView is from storyboard
+//eg:
+func setup() {...}
+override init(frame:CGRect){ //a designed initializer
+  super.init(frame:frame)
+  setup()
+}
+override init(coder aDecoder:CGCoder){ // a required initializer
+  super.init(coder:aDecoder)
+  setup()
+}
+
+//this is called immediately after initialization is complete
+//this is only called if the UIView is from storyboard
+awakeFromNib()
+
+Coordinate System Data Structure
+CGFloat // this is always used whenever working with coordinate system
+let pt = CGFloat(aDouble)
+
+CGPoint
+var point = CGPoint(x: 0.0, y: 0.0)
+point.x
+point.y
+
+CGSize
+var size = CGSize(width: 800.0, height: 600)
+size.width += 100.0
+size.height -= 50.0
+
+CGRect
+struct CGRect{
+  var origin :CGPoint
+  var size : CGSize
+}
+
+var contentScaleFactor : CGFloat // this is the pixel per point
+var bounds:CGRect
+var center:CGPoint //this is the center of the SUPERVIEW
+var frame :CGRect
+
+Creating UIView from code:
+let labelRect = CGRect(x: 20, y: 20, width: 100, height:50)
+let label = UILabel(frame: labelRect)
+label.text = "hello"
+view.addSubview(label)
+
+Custom View
+Custom drawing
+override func drawRect(regionThatNeedsToBeDrawn: CGRect)
+//NEVER call drawRect
+to redraw the view:
+setNeedsDisplay()
+setNeedsDisplayInRect(regionToBeDrawn:CGRect)
+
+Core Graphics Concept
+1. you need a context to draw to
+  UIGraphicsGetCurrentContext() gives a context you can use in drawRect
+2. create path(lines, arcs, etc)
+3. set drawing attributes like color,fontsm textures, linewidths...
+4. strokes or fill the above created path with given attributes
+
+UIBezierPath
+UIBezierPath automatically draws in the "current" context
+let path = UIBezierPath()
+path.moveToPoint(CGPoint(80,60))
+path.addLineToPint(CGPoint(140,150))
+path.addLineToPint(CGPoint(10,150))
+path.closePath()
+UIColor.greenColor().setFill()
+UIColor.redColor().setStroke()
+path.linewidth = 3.0
+path.fill()
+path.stroke
+
+//other common shapes
+let roundRect = UIBezierPath(roundedRect: aCGRect, cornerRadius: aCGFloat)
+let oval = UIBezierPath(ovalInRect: aCGRect)
+addClip()
+//Hit detection
+func containsPoint(CGPoint) -> Bool
+
+UIColor
+var backgroundColor: UIColor
+let transparentYellow = UIColor.yellowColor().colorWithAlphaComponent(0.5)
+//however you need to let the system know by setting the UIView
+var opaque = false
+//To make the entire view tansparent
+var alpha: CGFloat
+//completely hide a view
+var hidden : Bool //it won't draw and get no events
+
+Drawing Text
+1. Usually use a UILabel
+2. To draw in drawRect, use NSAttributedString
+let text = NSAttributedString("hello")
+text.drawAtPoint(aCGPoint)
+let textSize : CGSize = text.size
+3. MutableAttributedStirng:
+let mutableText = NSMutableAttributedString("Some string")
+func setAttributes(attributes: Dictionary, range: NSRange)
+func addAttributes(...)
+NSForegroundColorAttributeName: UIColor
+NSStrokeWidthAttributeName: CGFloat
+NSFontAttributeName: UIFont
+class func preferredFontForTextStyle(UIFontTextStyle) -> UIFont
+UIFontTextStyle.Headline
+UIFontTextStyle.Body
+UIFontTextStyle.FootNote
+//"system fonts"
+class func systemFontOfSize(pointSize: CGFloat) -> UIFont
+class func boldSystemFontOfSize(PointSize: CGFloat) -> UIFont
+//don't use these for user content
+
+Draw Images!!!!
+UIImageView
+let image: UIImage? = UIImage(named: "foo") // note that it is optional
+// You add foo.jpg to your project in the Images.xcassets file
+
+//Create one from file system
+let image : UIImage? = UIImage(contentsOfFile: aString)
+let image : UIImage? = UIImage(data: anNSData) //raw jpg, png, tiff...
+
+//draw!
+image.drawAtPoint(aCGPoint)
+image.drawInRect(aCGRect) //scales the image to fit a CGRect
+image.drawAsPatternInRect(aCGRect) //tiles the image into aCGRect
+
+var contentMode: UIViewContentMode
+.Left/.Right/.Top..../.Center
+.ScaleToFill/.ScaleAspectFill/.ScaleAspectFit
+.Redraw
+
+Extension
+You can add methods or properties to a class
+Protocol:
+Declaration
+protocol SomeProtocol : InheritedProtocol1, InheritedProtocol2{
+  var someProperty: Int {get set}
+  func aMethod(arg1: Double, arg2: String) -> SomeType
+  mutating func changeIt()
+  init(arg: Type)
+}
+//Anyone that implements SomeProtocol also needs to implement           InheritedProtocal1 and InheritedProtocal
+Implementing a protocol
+enum SomeEnum : SomeProtocol, AnotherProtocol{
+//must implement all the methods in protocols
+}
+// In a class, inits must be marked required
+extension Something : SomeProtocol{
+}
+
+Example:
+protocal Movable{
+  mutating func moveTo(p: CGPoint)
+}
+
+var thingToMove : Movable = prius
+thingToMove.moveTo(...)
+thingToMove = square
+let thingsToMove : [Movable] = [prius, square]
+
+func slide(slider:Movable){
+  let position = ...
+  slider.moveTo(position)
+}
+slide(prius)
+slide(square)
+func slideAndSlice(x : Protocol<Slippery, Movable>){
+  //both protocols have to be implemented
+}
+
+Gesture Recognition
+UIGestureRecognizer
+Adding a gesture recognition to a UIView
+@IBOutlet weak var pannableView: UIView{
+  didSet{
+    let recognition = UIPanGestureRecognizer(targe: self, action: "pan:") //: means recognizer has an argument
+    pannableView.addGestureRecognizer(recognizer)
+  }
+}
+
+//UIPanGestureRecognizer provides 3 methods
+func translationInView(view: UIView) -> CGPoint
+func velocityInView(view: UIView) -> CGPoint
+func setTranslation(translation: CGPoint, inView: UIView)
+
+func pan(gesture: UIPanGestureRecognizer){
+  switch gesture.state{
+    case .Changed: fallthrough
+    case .Ended:
+      let translation = gesture.translationView(pannableView)
+      gesture.setTranslation(GPPointZero, inView: pannableView)
+    default: break
+  }
+}
+
+
+UIPinchGestureRecognizer
+var scale: CGFloat
+var velocity: CGFloat {get}
+
+UIRotationGestureRecognizer
+var rotation: CGFloat
+var velocity: CGFloat {get} //radius per second
+
+UISwipeGestureRecognizer
+set up the direction and number of fingers you want, then look for .Recognized
+var direction: UISwipeGestureRecognizerDirection
+var numberOfTouchesRequired: Int
+
+UITapGestureRecognizer
+var numberOfTapsRequired: Int //single tap, double taps, etc
+var numberOfTouchesRequired: Int // finger count
+
+Segues
+Show Segue (will push in a Navigation controller, else Modal)
+Show Detail Segue
+Modal Segue (take over the entire screen)
+Popover Segue (make the MVC appear in a little popever window)
