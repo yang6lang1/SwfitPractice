@@ -11,7 +11,7 @@ import SpriteKit
 class SKBPlayer : SKSpriteNode {
     let kPlayerRunningIncrement = 100
     let kPlayerSkiddingIncrement = 20
-    let kPlayerJumpingIncrement = 10
+    let kPlayerJumpingIncrement = 8
     var spriteTextures: SKBSpriteTextures!
     
     enum SBPlayerStatus : Printable {
@@ -43,19 +43,20 @@ class SKBPlayer : SKSpriteNode {
     var playerStatus: SBPlayerStatus!
     
     func initNewPlayer(whichScene: SKScene, startingPoint location: CGPoint) -> SKBPlayer {
-        let playerTextures = SKBSpriteTextures()
-        playerTextures.createAnimationTextures()
+        let theScene = whichScene as! SKBGameScene
+        spriteTextures = theScene.spriteTextures
         
-        let f1 = SKTexture(imageNamed: playerTextures.kPlayerStillRightFileName)
+        let f1 = SKTexture(imageNamed: spriteTextures.kPlayerStillRightFileName)
         let player = SKBPlayer(texture: f1)
-        
+
+        player.spriteTextures = spriteTextures
         player.playerStatus = SBPlayerStatus.SBPlayerFacingRight
         player.name = "player1"
         player.position = location
-        player.spriteTextures = playerTextures
         player.physicsBody = SKPhysicsBody(rectangleOfSize: player.size)
         player.physicsBody?.categoryBitMask = Constants.kPlayerCategory
-        player.physicsBody?.contactTestBitMask = Constants.kWallCategory | Constants.kBaseCategory
+        player.physicsBody?.contactTestBitMask = Constants.kWallCategory
+        player.physicsBody?.collisionBitMask = Constants.kBaseCategory | Constants.kLedgeCategory | Constants.kWallCategory
         player.physicsBody?.density = CGFloat(1.0)
         player.physicsBody?.linearDamping = CGFloat(0.1)
         player.physicsBody?.restitution = CGFloat(0.2)
@@ -104,8 +105,8 @@ class SKBPlayer : SKSpriteNode {
         }
         
         //applicable animation
-        let jumpAnimation = SKAction.animateWithTextures(playerJumpTextures, timePerFrame: 1)
-        let jumpAwhile = SKAction.repeatAction(jumpAnimation, count: 1)
+        let jumpAnimation = SKAction.animateWithTextures(playerJumpTextures, timePerFrame: 0.2)
+        let jumpAwhile = SKAction.repeatAction(jumpAnimation, count: 4)
         
         self.runAction(jumpAwhile, completion: {
             if let status = nextPlayerStatus {

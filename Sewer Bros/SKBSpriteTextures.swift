@@ -25,6 +25,18 @@ class SKBSpriteTextures: NSObject {
     let kPlayerRunLeft3FileName = "Player_Left3"
     let kPlayerRunLeft4FileName = "Player_Left4"
     
+    let kRatzRunRight1FileName = "Ratz_Right1"
+    let kRatzRunRight2FileName = "Ratz_Right2"
+    let kRatzRunRight3FileName = "Ratz_Right3"
+    let kRatzRunRight4FileName = "Ratz_Right4"
+    let kRatzRunRight5FileName = "Ratz_Right5"
+    
+    let kRatzRunLeft1FileName = "Ratz_Left1"
+    let kRatzRunLeft2FileName = "Ratz_Left2"
+    let kRatzRunLeft3FileName = "Ratz_Left3"
+    let kRatzRunLeft4FileName = "Ratz_Left4"
+    let kRatzRunLeft5FileName = "Ratz_Left5"
+    
     var playerRunRightTextures:[SKTexture]!
     var playerStillFacingRightTextures:[SKTexture]!
     var playerSkiddingRightTextures:[SKTexture]!
@@ -33,6 +45,8 @@ class SKBSpriteTextures: NSObject {
     var playerStillFacingLeftTextures:[SKTexture]!
     var playerSkiddingLeftTextures:[SKTexture]!
     var playerJumpLeftTextures:[SKTexture]!
+    var ratzRunLeftTextures: [SKTexture]!
+    var ratzRunRightTextures: [SKTexture]!
     
     func createAnimationTextures(){
         var f1 = SKTexture(imageNamed: kPlayerRunRight1FileName)
@@ -64,5 +78,21 @@ class SKBSpriteTextures: NSObject {
         
         f1 = SKTexture(imageNamed: kPlayerJumpLeftFileName)
         playerJumpLeftTextures = [f1]
+        
+        //Ratz
+        f1 = SKTexture(imageNamed: kRatzRunRight1FileName)
+        f2 = SKTexture(imageNamed: kRatzRunRight2FileName)
+        f3 = SKTexture(imageNamed: kRatzRunRight3FileName)
+        f4 = SKTexture(imageNamed: kRatzRunRight4FileName)
+        var f5 = SKTexture(imageNamed: kRatzRunRight5FileName)
+        ratzRunRightTextures = [f1, f2, f3, f4, f5]
+        
+        
+        f1 = SKTexture(imageNamed: kRatzRunLeft1FileName)
+        f2 = SKTexture(imageNamed: kRatzRunLeft2FileName)
+        f3 = SKTexture(imageNamed: kRatzRunLeft3FileName)
+        f4 = SKTexture(imageNamed: kRatzRunLeft4FileName)
+        f5 = SKTexture(imageNamed: kRatzRunLeft5FileName)
+        ratzRunLeftTextures = [f1, f2, f3, f4, f5]
     }
 }

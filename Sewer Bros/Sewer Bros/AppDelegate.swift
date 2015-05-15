@@ -11,7 +11,9 @@ import UIKit
 struct Constants {
     static let kPlayerCategory =  UInt32(0x1 << 0)
     static let kBaseCategory = UInt32(0x1 << 1)
-    static let kWallCategory = UInt32(0x1 << 4)
+    static let kWallCategory = UInt32(0x1 << 2)
+    static let kLedgeCategory = UInt32(0x1 << 3)
+    static let kRatzCategory = UInt32(0x1 << 4)
 }
 
 @UIApplicationMain

@@ -18,6 +18,8 @@
 		3CD84BF51AE6FF9900945B82 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3CD84BF31AE6FF9900945B82 /* Main.storyboard */; };
 		3CD84BFA1AE6FF9900945B82 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CD84BF81AE6FF9900945B82 /* LaunchScreen.xib */; };
 		3CD84C061AE6FF9900945B82 /* Sewer_BrosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD84C051AE6FF9900945B82 /* Sewer_BrosTests.swift */; };
+		3CFA02171AED60B80084DAB9 /* SBLedge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFA02161AED60B70084DAB9 /* SBLedge.swift */; };
+		3CFCF2CF1B056B3200252E52 /* SKBRatz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CFCF2CE1B056B3200252E52 /* SKBRatz.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,8 @@
 		3CD84BFF1AE6FF9900945B82 /* Sewer BrosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Sewer BrosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CD84C041AE6FF9900945B82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3CD84C051AE6FF9900945B82 /* Sewer_BrosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sewer_BrosTests.swift; sourceTree = "<group>"; };
+		3CFA02161AED60B70084DAB9 /* SBLedge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SBLedge.swift; sourceTree = "<group>"; };
+		3CFCF2CE1B056B3200252E52 /* SKBRatz.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKBRatz.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +96,8 @@
 				3CD84BEF1AE6FF9900945B82 /* SKBSplashScene.swift */,
 				3C6C43A21AE76ADF0014DF49 /* SKBGameScene.swift */,
 				3C96E2A21AE81E4800C2A26B /* SKBPlayer.swift */,
+				3CFCF2CE1B056B3200252E52 /* SKBRatz.swift */,
+				3CFA02161AED60B70084DAB9 /* SBLedge.swift */,
 				3C96E2A61AE8600200C2A26B /* SKBSpriteTextures.swift */,
 				3CD84BF11AE6FF9900945B82 /* GameViewController.swift */,
 				3CD84BF31AE6FF9900945B82 /* Main.storyboard */,
@@ -229,6 +235,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3CD84BF01AE6FF9900945B82 /* SKBSplashScene.swift in Sources */,
+				3CFCF2CF1B056B3200252E52 /* SKBRatz.swift in Sources */,
+				3CFA02171AED60B80084DAB9 /* SBLedge.swift in Sources */,
 				3C6C43A31AE76ADF0014DF49 /* SKBGameScene.swift in Sources */,
 				3CD84BF21AE6FF9900945B82 /* GameViewController.swift in Sources */,
 				3CD84BEC1AE6FF9900945B82 /* AppDelegate.swift in Sources */,

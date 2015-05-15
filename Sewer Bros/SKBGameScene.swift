@@ -10,14 +10,23 @@ import SpriteKit
 
 class SKBGameScene :SKScene, SKPhysicsContactDelegate {
     var playerSprite : SKBPlayer! = nil
+    var spriteTextures : SKBSpriteTextures! = nil
+    var spawnedEnemyCount = 0
+    var enemyIsSpawningFlag = false
     
     override func didMoveToView(view: SKView) {
         super.didMoveToView(view)
         
         self.backgroundColor = SKColor.blackColor()
-        self.physicsBody = SKPhysicsBody(edgeLoopFromRect: self.frame)
+        
+        let edgeRect = CGRectMake(0, 0, self.frame.width, self.frame.height + 200)
+        self.physicsBody = SKPhysicsBody(edgeLoopFromRect: edgeRect)
         self.physicsBody?.categoryBitMask = Constants.kWallCategory
         self.physicsWorld.contactDelegate = self
+        
+        //initialize and create our sprite textures
+        spriteTextures = SKBSpriteTextures()
+        spriteTextures.createAnimationTextures()
         
         // backdrop
         var fileName = ""
@@ -33,15 +42,7 @@ class SKBGameScene :SKScene, SKPhysicsContactDelegate {
         backdrop.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))
         self.addChild(backdrop)
         
-        // brick base
-        let brickImage = SKTexture(imageNamed: "Base_600")
-        let brickBase = SKSpriteNode(texture: brickImage, size: CGSize(width: self.frame.size.width, height: brickImage.size().height))
-        brickBase.name = "brickBaseNode"
-        brickBase.position = CGPointMake(CGRectGetMidX(self.frame), brickBase.size.height / 2)
-        brickBase.physicsBody = SKPhysicsBody(rectangleOfSize: brickBase.size)
-        brickBase.physicsBody?.categoryBitMask = Constants.kBaseCategory
-        brickBase.physicsBody?.dynamic = false
-        self.addChild(brickBase)
+        self.createSceneContents()
     }
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
@@ -81,7 +82,37 @@ class SKBGameScene :SKScene, SKPhysicsContactDelegate {
     }
     
     override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
+        if !enemyIsSpawningFlag && spawnedEnemyCount < 25 {
+            enemyIsSpawningFlag = true
+            let castIndex = spawnedEnemyCount
+            
+            let scheduledDelay = NSTimeInterval(2)
+            let leftSideX = CGRectGetMinX(self.frame) + SKBRatz().kEnemySpawnEdgeBufferX
+            let rightSideX = CGRectGetMaxX(self.frame) - SKBRatz().kEnemySpawnEdgeBufferX
+            let topSideY = CGRectGetMaxY(self.frame) - SKBRatz().kEnemySpawnEdgeBufferY
+            
+            var startX = CGFloat(0)
+            //alternate sides for every other spawn
+            if castIndex % 2 == 0 {
+                startX = leftSideX
+            }
+            else {
+                startX = rightSideX
+            }
+            let startY = topSideY
+            
+            //begin delay & when completed spawn new enemy
+            let spacing = SKAction.waitForDuration(scheduledDelay)
+            self.runAction(spacing, completion: {
+                //Create and spawn new enemy
+                self.enemyIsSpawningFlag = false
+                self.spawnedEnemyCount++
+                
+                var newEnemy = SKBRatz()
+                newEnemy = newEnemy.initNewRatz(self, startingPoint: CGPointMake(startX, startY), ratzIndex: castIndex)
+                newEnemy.spawnInScene(self)
+            })
+        }
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
@@ -110,7 +141,112 @@ class SKBGameScene :SKScene, SKPhysicsContactDelegate {
                     }
                 }
             }
+        } else if firstBody.categoryBitMask & Constants.kWallCategory > 0 {
+            //wall contacts with ratz
+            if secondBody.categoryBitMask & Constants.kRatzCategory > 0 {
+                let theRatz = secondBody.node as! SKBRatz
+                if contact.contactPoint.x < 100 {
+                    theRatz.wrapRatz(CGPointMake(self.frame.width - 11, theRatz.position.y))
+                }
+                else {
+                    theRatz.wrapRatz(CGPointMake(11, theRatz.position.y))
+                }
+            }
+        }
+        else if firstBody.categoryBitMask & Constants.kRatzCategory > 0 {
+            //ratz contacts with ratz
+            if secondBody.categoryBitMask & Constants.kRatzCategory > 0 {
+                let firstRat = firstBody.node as! SKBRatz
+                let secondRat = secondBody.node as! SKBRatz
+            
+                if firstRat.ratzStatus == SKBRatz.SBRatzStatus.SBRatzRunningLeft {
+                    firstRat.turnRight()
+                }
+                else {
+                    firstRat.turnLeft()
+                }
+                
+                if secondRat.ratzStatus == SKBRatz.SBRatzStatus.SBRatzRunningLeft {
+                    secondRat.turnRight()
+                }
+                else {
+                    secondRat.turnLeft()
+                }
+            }
         }
     }
 
+    func createSceneContents() {
+        
+        // brick base
+        let brickImage = SKTexture(imageNamed: "Base_600")
+        let brickBase = SKSpriteNode(texture: brickImage, size: CGSize(width: self.frame.size.width, height: brickImage.size().height))
+        brickBase.name = "brickBaseNode"
+        brickBase.position = CGPointMake(CGRectGetMidX(self.frame), brickBase.size.height / 2)
+        brickBase.physicsBody = SKPhysicsBody(rectangleOfSize: brickBase.size)
+        brickBase.physicsBody?.categoryBitMask = Constants.kBaseCategory
+        brickBase.physicsBody?.dynamic = false
+        self.addChild(brickBase)
+        
+        // ledge
+        let ledge = SBLedge()
+        var ledgeIndex = 0
+        //ledge, bottom left
+        var howMany = 0
+        if CGRectGetMaxX(self.frame) < 500{
+            howMany = 18
+        }
+        else{
+            howMany = 23
+        }
+        ledge.createNewSetOfLedgeNodes(self, startingPoint: CGPointMake(ledge.kLedgeSideBufferSpacing, brickBase.position.y + 80), withHowManyBlocks: howMany, startingIndex: ledgeIndex)
+        ledgeIndex += howMany
+        
+        //ledge, bottom right
+        ledge.createNewSetOfLedgeNodes(self, startingPoint: CGPointMake(CGRectGetMaxX(self.frame) - ledge.kLedgeSideBufferSpacing - CGFloat(howMany - 1) * ledge.kLedgeBrickSpacing,  brickBase.position.y + 80), withHowManyBlocks: howMany, startingIndex: ledgeIndex)
+        ledgeIndex += howMany
+        
+        //ledge, middle left
+        if CGRectGetMaxX(self.frame) < 500 {
+            howMany = 6
+        }
+        else {
+            howMany = 8
+        }
+        ledge.createNewSetOfLedgeNodes(self, startingPoint: CGPointMake(CGRectGetMinX(self.frame) + ledge.kLedgeSideBufferSpacing, brickBase.position.y + 142), withHowManyBlocks: howMany, startingIndex: ledgeIndex)
+        ledgeIndex += howMany
+        
+        //ledge, middle middle
+        if CGRectGetMaxX(self.frame) < 500 {
+            howMany = 31
+        }
+        else {
+            howMany = 36
+        }
+        ledge.createNewSetOfLedgeNodes(self, startingPoint: CGPointMake(CGRectGetMidX(self.frame) - (CGFloat(howMany) * ledge.kLedgeBrickSpacing) / 2, brickBase.position.y + 142), withHowManyBlocks: howMany, startingIndex: ledgeIndex)
+        ledgeIndex += howMany
+        
+        //ledge, middle right
+        if CGRectGetMaxX(self.frame) < 500 {
+            howMany = 6
+        }
+        else {
+            howMany = 9
+        }
+        ledge.createNewSetOfLedgeNodes(self, startingPoint: CGPointMake(CGRectGetMaxX(self.frame) - ledge.kLedgeSideBufferSpacing - CGFloat(howMany - 1) * ledge.kLedgeBrickSpacing, brickBase.position.y + 142), withHowManyBlocks: howMany, startingIndex: ledgeIndex)
+        ledgeIndex += howMany
+        
+        //ledge, top left
+        if CGRectGetMaxX(self.frame) < 500 {
+            howMany = 23
+        }
+        else {
+            howMany = 28
+        }
+        ledge.createNewSetOfLedgeNodes(self, startingPoint: CGPointMake(CGRectGetMinX(self.frame) + ledge.kLedgeSideBufferSpacing, brickBase.position.y + 224), withHowManyBlocks: howMany, startingIndex: ledgeIndex)
+        ledgeIndex += howMany
+        
+        //ledge, top right
+        ledge.createNewSetOfLedgeNodes(self, startingPoint: CGPointMake(CGRectGetMaxX(self.frame) - ledge.kLedgeSideBufferSpacing - CGFloat(howMany - 1) * ledge.kLedgeBrickSpacing, brickBase.position.y + 224), withHowManyBlocks: howMany, startingIndex: ledgeIndex)
+    }
 }
